@@ -7,6 +7,11 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>node-discovery</module>
+        <module>node-configuration</module>
+    </modules>
+
     <name>ms-20241021</name>
     <url>http://maven.apache.org</url>
 
