@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.training.microservice.msorder.input.mappers.IOrderMapper;
 import org.training.microservice.msorder.input.models.OrderDto;
 import org.training.microservice.msorder.input.models.OrderResponse;
 import org.training.microservice.msorder.services.OrderProcessService;
@@ -21,11 +22,10 @@ public class OrderProcessRestController {
     private final OrderProcessService orderProcessService;
 
 
-
-    @Operation(summary = "order place için kullnılıyor",description = "daha uzun order place için kullnılıyor")
+    @Operation(summary = "order place için kullnılıyor", description = "daha uzun order place için kullnılıyor")
     @PostMapping("/place")
     public ResponseEntity<OrderResponse> placeOrder(@Valid @RequestBody OrderDto orderDtoParam) {
-        orderProcessService.place();
+        orderProcessService.place(IOrderMapper.ORDER_MAPPER.toOrder(orderDtoParam));
         return ResponseEntity.status(HttpStatus.CREATED)
                              .header("orderStatus",
                                      "created")
@@ -45,7 +45,7 @@ public class OrderProcessRestController {
 
     @GetMapping("/schedule")
     public String scheduleOrder(@RequestParam("orderId") String orderId,
-                              @RequestParam("st") ZonedDateTime st) {
+                                @RequestParam("st") ZonedDateTime st) {
         return "OK";
     }
 

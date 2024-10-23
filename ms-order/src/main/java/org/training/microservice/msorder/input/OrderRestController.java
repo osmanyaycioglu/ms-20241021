@@ -26,7 +26,6 @@ public class OrderRestController {
     public ErrorObj handleException(IllegalArgumentException exp) {
         return ErrorObj.builder()
                        .withDescParam(exp.getMessage())
-                       .withCodeParam(2056)
                        .build();
     }
 
