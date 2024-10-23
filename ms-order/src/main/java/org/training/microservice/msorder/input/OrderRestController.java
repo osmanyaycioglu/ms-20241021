@@ -1,8 +1,8 @@
 package org.training.microservice.msorder.input;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.training.microservice.mscommon.error.ErrorObj;
 import org.training.microservice.msorder.input.models.OrderDto;
 import org.training.microservice.msorder.input.models.OrderResponse;
 import org.training.microservice.msorder.input.models.Response;
@@ -20,5 +20,15 @@ public class OrderRestController {
 
     public void queryOrder() {
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorObj handleException(IllegalArgumentException exp) {
+        return ErrorObj.builder()
+                       .withDescParam(exp.getMessage())
+                       .withCodeParam(2056)
+                       .build();
+    }
+
 
 }
