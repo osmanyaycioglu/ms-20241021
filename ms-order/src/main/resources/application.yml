@@ -1,52 +1,68 @@
 info:
-    app:
-        desc: deneme desc
-        sum: sum
-        version: '@project.version@'
+  app:
+    desc: deneme desc
+    sum: sum
+    version: '@project.version@'
 management:
-    endpoint:
-        env:
-            show-values: always
-        health:
-            show-components: always
-            show-details: always
-    endpoints:
-        web:
-            exposure:
-                include: '*'
-    info:
-        env:
-            enabled: true
+  endpoint:
+    env:
+      show-values: always
+    health:
+      show-components: always
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
 server:
-    error:
-        include-binding-errors: always
-        include-exception: true
-        include-message: always
-    port: ${uygulama.portu:10000}
+  error:
+    include-binding-errors: always
+    include-exception: true
+    include-message: always
+  port: ${uygulama.portu:10000}
 spring:
-    application:
-        name: order
-    cloud:
-        loadbalancer:
-            retry:
-                enabled: false
-                max-retries-on-next-service-instance: 3
-                max-retries-on-same-service-instance: 0
-                retry-on-all-exceptions: false
-                retry-on-all-operations: false
-    config:
-        import: configserver:http://127.0.0.1:8888
+  application:
+    name: order
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: false
+        max-retries-on-next-service-instance: 3
+        max-retries-on-same-service-instance: 0
+        retry-on-all-exceptions: false
+        retry-on-all-operations: false
+  config:
+    import: configserver:http://127.0.0.1:8888
 resilience4j:
-    retry:
-        instances:
-          accounting-pay3-retry:
-            base-config: base1
-            enable-exponential-backoff: true
-            exponential-backoff-multiplier: 2
-            exponential-max-wait-duration: 20ms
-            retry-exception-predicate: org.training.microservice.msorder.integration.resiliecy.MyRetryPredicate
-            result-predicate: org.training.microservice.msorder.integration.resiliecy.MyResultPredicate
-        configs:
-          base1:
-              max-attempts: 3
-              wait-duration: 10ms
+  retry:
+    instances:
+      accounting-pay3-retry:
+        base-config: base1
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        exponential-max-wait-duration: 20ms
+        retry-exception-predicate: org.training.microservice.msorder.integration.resiliecy.MyRetryPredicate
+        result-predicate: org.training.microservice.msorder.integration.resiliecy.MyResultPredicate
+    configs:
+      base1:
+        max-attempts: 3
+        wait-duration: 10ms
+  circuitbreaker:
+    instances:
+      accounting-pay3-cb:
+        base-config: cb-base1
+    configs:
+      cb-base1:
+        sliding-window-type: count_based
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 30
+        wait-duration-in-open-state: 2s
+        automatic-transition-from-open-to-half-open-enabled: false
+        permitted-number-of-calls-in-half-open-state: 10
+        slow-call-duration-threshold: 200ms
+        slow-call-rate-threshold: 50
+

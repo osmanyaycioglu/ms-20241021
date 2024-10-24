@@ -3,6 +3,7 @@ package org.training.microservice.msorder.integration;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,8 @@ public class AccountingIntegration {
         return paymentResponseLoc;
     }
 
-    @Retry(name = "accounting-pay3-retry",fallbackMethod = "pay3Fallback")
+    @Retry(name = "accounting-pay3-retry", fallbackMethod = "pay3Fallback")
+    @CircuitBreaker(name = "accounting-pay3-cb", fallbackMethod = "pay3Fallback")
     public PaymentResponse pay3(String orderId,
                                 BigDecimal amount,
                                 String customerId) {
@@ -74,8 +76,9 @@ public class AccountingIntegration {
     }
 
     public PaymentResponse pay3Fallback(String orderId,
-                                BigDecimal amount,
-                                String customerId,Throwable throwableParam) {
+                                        BigDecimal amount,
+                                        String customerId,
+                                        Throwable throwableParam) {
         System.out.println("pay3 ------ Fallback ");
         return new PaymentResponse();
     }
