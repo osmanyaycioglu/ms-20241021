@@ -3,6 +3,7 @@ package org.training.microservice.msorder.integration;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -62,7 +63,7 @@ public class AccountingIntegration {
         return paymentResponseLoc;
     }
 
-
+    @Retry(name = "accounting-pay3-retry")
     public PaymentResponse pay3(String orderId,
                                 BigDecimal amount,
                                 String customerId) {

@@ -1,0 +1,52 @@
+info:
+    app:
+        desc: deneme desc
+        sum: sum
+        version: '@project.version@'
+management:
+    endpoint:
+        env:
+            show-values: always
+        health:
+            show-components: always
+            show-details: always
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+    info:
+        env:
+            enabled: true
+server:
+    error:
+        include-binding-errors: always
+        include-exception: true
+        include-message: always
+    port: ${uygulama.portu:10000}
+spring:
+    application:
+        name: order
+    cloud:
+        loadbalancer:
+            retry:
+                enabled: false
+                max-retries-on-next-service-instance: 3
+                max-retries-on-same-service-instance: 0
+                retry-on-all-exceptions: false
+                retry-on-all-operations: false
+    config:
+        import: configserver:http://127.0.0.1:8888
+resilience4j:
+    retry:
+        instances:
+          accounting-pay3-retry:
+            base-config: base1
+            enable-exponential-backoff: true
+            exponential-backoff-multiplier: 2
+            exponential-max-wait-duration: 20ms
+            retry-exception-predicate: org.training.microservice.msorder.integration.resiliecy.MyRetryPredicate
+            result-predicate: org.training.microservice.msorder.integration.resiliecy.MyResultPredicate
+        configs:
+          base1:
+              max-attempts: 3
+              wait-duration: 10ms

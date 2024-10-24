@@ -26,6 +26,35 @@ public class ErrorAdvice {
                        .build();
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorObj handleException(IllegalStateException exp) {
+        return ErrorObj.builder()
+                       .withDescParam(exp.getMessage())
+                       .withCodeParam(2055)
+                       .build();
+    }
+
+    @ExceptionHandler(RemoteCallException.class)
+    public ResponseEntity<ErrorObj> handleException(RemoteCallException exp) {
+        ErrorObj errorObjLoc = exp.getErrorObj();
+        if (errorObjLoc.getCode() == 2055) {
+            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+                                 .body(ErrorObj.builder()
+                                               .withDescParam(exp.getMessage())
+                                               .withCodeParam(2055)
+                                               .build());
+
+        } else if (errorObjLoc.getCode() == 1024 || errorObjLoc.getCode() == 1026) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body(ErrorObj.builder()
+                                               .withDescParam(exp.getMessage())
+                                               .withCodeParam(2055)
+                                               .build());
+
+        }
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorObj handleException(MethodArgumentNotValidException exp) {
@@ -40,7 +69,7 @@ public class ErrorAdvice {
                                                                                 + fe.getField()
                                                                                 + " rejeceted : "
                                                                                 + fe.getRejectedValue())
-                                                      .withCodeParam(1025)
+                                                                 .withCodeParam(1025)
                                                                  .build())
                                               .collect(Collectors.toList()))
                        .build();

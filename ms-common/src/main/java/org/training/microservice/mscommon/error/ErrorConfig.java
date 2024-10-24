@@ -7,8 +7,13 @@ import org.springframework.context.annotation.Configuration;
 public class ErrorConfig {
 
     @Bean
-    public ErrorAdvice errorAdvice(){
+    public ErrorAdvice errorAdvice() {
         return new ErrorAdvice();
+    }
+
+    @Bean
+    public MyErrorDecoder myErrorDecoder() {
+        return new MyErrorDecoder();
     }
 
 }
