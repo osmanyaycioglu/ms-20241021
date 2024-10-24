@@ -11,6 +11,7 @@ import org.training.microservice.msorder.input.mappers.IOrderMapper;
 import org.training.microservice.msorder.input.models.OrderDto;
 import org.training.microservice.msorder.input.models.OrderResponse;
 import org.training.microservice.msorder.services.OrderProcessService;
+import org.training.microservice.msorder.services.models.OrderCreationResult;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -25,14 +26,41 @@ public class OrderProcessRestController {
     @Operation(summary = "order place için kullnılıyor", description = "daha uzun order place için kullnılıyor")
     @PostMapping("/place")
     public ResponseEntity<OrderResponse> placeOrder(@Valid @RequestBody OrderDto orderDtoParam) {
-        orderProcessService.place(IOrderMapper.ORDER_MAPPER.toOrder(orderDtoParam));
+        OrderCreationResult orderCreationResultLoc = orderProcessService.place(IOrderMapper.ORDER_MAPPER.toOrder(orderDtoParam));
         return ResponseEntity.status(HttpStatus.CREATED)
                              .header("orderStatus",
                                      "created")
                              .body(OrderResponse.builder()
-                                                .withDesc("alındı")
-                                                .withOrderId(UUID.randomUUID()
-                                                                 .toString())
+                                                .withDesc(orderCreationResultLoc.getDesc())
+                                                .withOrderId(orderCreationResultLoc.getOrderId())
+                                                .withScheduleTime(ZonedDateTime.now()
+                                                                               .plusHours(1))
+                                                .build());
+    }
+
+    @PostMapping("/place2")
+    public ResponseEntity<OrderResponse> placeOrder2(@Valid @RequestBody OrderDto orderDtoParam) {
+        OrderCreationResult orderCreationResultLoc = orderProcessService.place2(IOrderMapper.ORDER_MAPPER.toOrder(orderDtoParam));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .header("orderStatus",
+                                     "created")
+                             .body(OrderResponse.builder()
+                                                .withDesc(orderCreationResultLoc.getDesc())
+                                                .withOrderId(orderCreationResultLoc.getOrderId())
+                                                .withScheduleTime(ZonedDateTime.now()
+                                                                               .plusHours(1))
+                                                .build());
+    }
+
+    @PostMapping("/place3")
+    public ResponseEntity<OrderResponse> placeOrder3(@Valid @RequestBody OrderDto orderDtoParam) {
+        OrderCreationResult orderCreationResultLoc = orderProcessService.place3(IOrderMapper.ORDER_MAPPER.toOrder(orderDtoParam));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .header("orderStatus",
+                                     "created")
+                             .body(OrderResponse.builder()
+                                                .withDesc(orderCreationResultLoc.getDesc())
+                                                .withOrderId(orderCreationResultLoc.getOrderId())
                                                 .withScheduleTime(ZonedDateTime.now()
                                                                                .plusHours(1))
                                                 .build());
