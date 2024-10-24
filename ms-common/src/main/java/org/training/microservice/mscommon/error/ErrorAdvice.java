@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -42,17 +43,26 @@ public class ErrorAdvice {
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                                  .body(ErrorObj.builder()
                                                .withDescParam(exp.getMessage())
-                                               .withCodeParam(2055)
+                                               .withCodeParam(errorObjLoc.getCode() )
+                                               .withSubErrorsParam(List.of(exp.getErrorObj()))
                                                .build());
 
         } else if (errorObjLoc.getCode() == 1024 || errorObjLoc.getCode() == 1026) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(ErrorObj.builder()
                                                .withDescParam(exp.getMessage())
-                                               .withCodeParam(2055)
+                                               .withCodeParam(errorObjLoc.getCode() )
+                                               .withSubErrorsParam(List.of(exp.getErrorObj()))
                                                .build());
 
         }
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                             .body(ErrorObj.builder()
+                                           .withDescParam(exp.getMessage())
+                                           .withCodeParam(errorObjLoc.getCode() )
+                                           .withSubErrorsParam(List.of(exp.getErrorObj()))
+                                           .build());
+
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

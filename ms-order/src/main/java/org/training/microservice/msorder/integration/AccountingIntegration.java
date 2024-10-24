@@ -63,7 +63,7 @@ public class AccountingIntegration {
         return paymentResponseLoc;
     }
 
-    @Retry(name = "accounting-pay3-retry")
+    @Retry(name = "accounting-pay3-retry",fallbackMethod = "pay3Fallback")
     public PaymentResponse pay3(String orderId,
                                 BigDecimal amount,
                                 String customerId) {
@@ -71,6 +71,13 @@ public class AccountingIntegration {
                                                               amount,
                                                               customerId);
         return accountingFeignClient.pay(paymentRequestLoc);
+    }
+
+    public PaymentResponse pay3Fallback(String orderId,
+                                BigDecimal amount,
+                                String customerId,Throwable throwableParam) {
+        System.out.println("pay3 ------ Fallback ");
+        return new PaymentResponse();
     }
 
 }
