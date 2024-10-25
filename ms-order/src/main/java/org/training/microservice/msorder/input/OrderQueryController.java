@@ -1,5 +1,6 @@
 package org.training.microservice.msorder.input;
 
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/order/query")
+@RefreshScope
 public class OrderQueryController {
 
     @GetMapping("/get/one/order")
