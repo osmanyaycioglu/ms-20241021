@@ -1,0 +1,28 @@
+server:
+  port: ${uygulama.portu:8080}
+spring:
+  application:
+    name: apigw-order
+  config:
+    import: configserver:http://127.0.0.1:8888
+  cloud:
+    gateway:
+      metrics:
+        enabled: true
+      routes:
+        - id: order-process-route
+          uri: lb://ORDER
+          predicates:
+            - Path=/apigw/api/*/order/**
+          order: 1
+          filters:
+            - RewritePath=/apigw/?(?<segment>.*), /$\{segment}
+            - Logging= info, prefix1
+        - id: order-process-test
+          uri: lb://ORDER
+          predicates:
+            - TokenCheck= true, osman
+          order: 2
+          filters:
+            - Logging= info, prefix2
+

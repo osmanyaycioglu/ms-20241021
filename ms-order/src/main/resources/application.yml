@@ -65,4 +65,3 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 10
         slow-call-duration-threshold: 200ms
         slow-call-rate-threshold: 50
-

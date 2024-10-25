@@ -12,11 +12,15 @@ public class MyErrorDecoder implements ErrorDecoder {
                             final Response responseParam) {
         ObjectMapper objectMapperLoc = new ObjectMapper();
         try {
-            ErrorObj errorObjLoc = objectMapperLoc.readValue(responseParam.body()
+            Response.Body bodyLoc = responseParam.body();
+            System.out.println("Error body  : " + bodyLoc.toString());
+
+            ErrorObj errorObjLoc = objectMapperLoc.readValue(bodyLoc
                                                                           .asInputStream(),
                                                              ErrorObj.class);
             return new RemoteCallException(errorObjLoc);
         } catch (IOException eParam) {
+            eParam.printStackTrace();
             throw new RemoteCallException();
         }
     }

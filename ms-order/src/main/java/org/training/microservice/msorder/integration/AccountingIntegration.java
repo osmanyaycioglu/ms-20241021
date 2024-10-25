@@ -72,7 +72,12 @@ public class AccountingIntegration {
         PaymentRequest paymentRequestLoc = new PaymentRequest(orderId,
                                                               amount,
                                                               customerId);
-        return accountingFeignClient.pay(paymentRequestLoc);
+        try {
+            return accountingFeignClient.pay(paymentRequestLoc);
+        } catch (Exception eParam) {
+            eParam.printStackTrace();
+            throw eParam;
+        }
     }
 
     public PaymentResponse pay3Fallback(String orderId,

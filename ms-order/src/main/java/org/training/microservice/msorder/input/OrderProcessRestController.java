@@ -4,6 +4,7 @@ package org.training.microservice.msorder.input;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,8 @@ import java.util.UUID;
 public class OrderProcessRestController {
     private final OrderProcessService orderProcessService;
 
+    @Value("${server.port}")
+    private int port;
 
     @Operation(summary = "order place için kullnılıyor", description = "daha uzun order place için kullnılıyor")
     @PostMapping("/place")
@@ -59,7 +62,7 @@ public class OrderProcessRestController {
                              .header("orderStatus",
                                      "created")
                              .body(OrderResponse.builder()
-                                                .withDesc(orderCreationResultLoc.getDesc())
+                                                .withDesc(orderCreationResultLoc.getDesc() + " order port : " + port)
                                                 .withOrderId(orderCreationResultLoc.getOrderId())
                                                 .withScheduleTime(ZonedDateTime.now()
                                                                                .plusHours(1))
